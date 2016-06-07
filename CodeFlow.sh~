@@ -6,7 +6,6 @@ logFile="log.txt"
 pcap_parent=$home_dir"/Datasets_PCAPs/"
 csv_parent=$home_dir"/Datasets_CSVs/"
 
-
 separator="/"
 underscore="_"
 
@@ -64,7 +63,7 @@ echo
 ######################################################
 
 echo "Scripts Path...." $scripts_path
-#PCAP Folder Structure: /home/dherytaj/Datasets_PCAPs/Name_of_dataset/DayNo/<PCAP_Files>
+#PCAP Folder Structure: ~/Datasets_PCAPs/Name_of_dataset/DayNo/<PCAP_Files>
 pcap_path=$pcap_parent$dataset
 #CSV Folder Structure: ~/Datasets_CSVs/Name_of_dataset/DayNo_Merged.csv
 csv_path=$csv_parent$dataset
@@ -97,7 +96,7 @@ fi
 
 echo "Creating Folder Structure"
 #Output Folder Structure: ~/DataAnalysis/Name_of_dataset/Day#/ScriptName/
-output_parent="/home/dherytaj/DataAnalysis/"
+output_parent=$home_dir"DataAnalysis/"
 output_path=$output_parent$dataset$separator
 
 #Create Folder Structure
@@ -216,35 +215,7 @@ then
   out_path=$output_path$day$separator$causal_analysis$separator
   execute_path=$scripts_path$causal_analysis
   script_name="/Quantify-Causes.sh"
-	  echo -n "........Do you want to provide path of clients file (1) or enter client MAC addresses (2)?"
-	  read clientChoice
-	  if [ $clientChoice -eq 1 ]; then
-		  echo -n "........Enter the file name----"
-         	  read clientFile
-	  fi
-	  if [ $clientChoice -eq 2 ]; then
-	          enterMore=
-	  	  until [ "$enterMore" = "n" ]; do
-  	          echo -n ".........Client's MAC Address----"
-	          read clientMAC
-	          clientFile="/tmp/Clients.txt"
-	          if [ -f $clientFile ]; then
-		     rm $clientFile
-	          fi
-	          echo $clientMAC >> $clientFile
-	          echo -n "..........Enter More (y/n)?"
-	          read enterMore
-	          done
-           fi
-  	   echo -n "........Enter allowed SSIDs (CSV)----"
-  	   read SSIDs
-    	   ssidFile="/tmp/SSIDs.txt"
-  	   if [ -f $ssidFile ]; then
-	  	   rm $ssidFile
-    	   fi
-    	   echo $SSIDs >> $ssidFile
- 
-  $execute_path$script_name $csv_path$separator$csv $out_path $clientFile $ssidFile
+  $execute_path$script_name $csv_path$separator$csv $out_path $output_path$day$separator$aps_clients/Clients.txt $output_path$day$separator$aps_clients/SSIDs.txt
   echo "....Find the quantification of causal model--Ended"
 fi
 
