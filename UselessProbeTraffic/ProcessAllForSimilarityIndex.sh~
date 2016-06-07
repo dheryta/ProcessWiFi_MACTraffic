@@ -2,7 +2,7 @@
 home_dir=`eval echo ~$USER/`
 Folder=$home_dir"NormalProbeTraffic_WIPS/"$1 #Date PCAP_CSV being processed
 Date=$1
-ParentDirectory=$home_dir
+ParentDirectory=home_dir
 ssid=$2
 
 if [ ! -d $ParentDirectory$Date ]; then

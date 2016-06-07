@@ -16,7 +16,8 @@ frameType=$3
 denominator=$4 #1 or 2
 CDF="CDF"
 FrameDetails="_FrameDetails"
-codePath="/home/dherytaj/Scripts/CausalAnalysis/FindAllTrafficDetails/"
+home_dir=`eval echo ~$USER/`
+codePath="$home_dir"/Scripts/CausalAnalysis/FindAllTrafficDetails/"
 
 IFAT="IFAT.csv"
 Size="Size.csv"

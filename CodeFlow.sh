@@ -1,9 +1,10 @@
 #!/bin/sh
 #Parent Folder of Scripts
-scripts_path="/home/dherytaj/Scripts/CausalAnalysis/"
+home_dir=`eval echo ~$USER`
+scripts_path=$home_dir"/Scripts/CausalAnalysis/"
 logFile="log.txt"
-pcap_parent="/home/dherytaj/Datasets_PCAPs/"
-csv_parent="/home/dherytaj/Datasets_CSVs/"
+pcap_parent=$home_dir"/Datasets_PCAPs/"
+csv_parent=$home_dir"/Datasets_CSVs/"
 
 separator="/"
 underscore="_"
@@ -62,7 +63,7 @@ echo
 ######################################################
 
 echo "Scripts Path...." $scripts_path
-#PCAP Folder Structure: /home/dherytaj/Datasets_PCAPs/Name_of_dataset/DayNo/<PCAP_Files>
+#PCAP Folder Structure: ~/Datasets_PCAPs/Name_of_dataset/DayNo/<PCAP_Files>
 pcap_path=$pcap_parent$dataset
 #CSV Folder Structure: ~/Datasets_CSVs/Name_of_dataset/DayNo_Merged.csv
 csv_path=$csv_parent$dataset
@@ -95,7 +96,7 @@ fi
 
 echo "Creating Folder Structure"
 #Output Folder Structure: ~/DataAnalysis/Name_of_dataset/Day#/ScriptName/
-output_parent="/home/dherytaj/DataAnalysis/"
+output_parent=$home_dir"DataAnalysis/"
 output_path=$output_parent$dataset$separator
 
 #Create Folder Structure

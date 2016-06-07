@@ -37,7 +37,8 @@ mac_file=$3
 ssid_file=$4
 totalMAC=`cat $3|wc -l`
 i=1
-codePath="/home/dherytaj/Scripts/CausalAnalysis/CausalAnalysis-Datasets/"
+home_dir=`eval echo ~$USER/`
+codePath=$home_dir"/Scripts/CausalAnalysis/CausalAnalysis-Datasets/"
 
 if [ ! -d $output_folder ]; then
 mkdir $output_folder

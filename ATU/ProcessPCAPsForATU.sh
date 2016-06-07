@@ -4,7 +4,8 @@
 #pcapFolder=$1 #CSV Date Folder
 csv=$1
 outputFolder=$2
-codePath="/home/dherytaj/Scripts/CausalAnalysis/ATU/"
+home_dir=`eval echo ~$USER/`
+codePath=$home_dir"Scripts/CausalAnalysis/ATU/"
 edcaEnabled=$3
 denominator=$4
 slotSize=$5

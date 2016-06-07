@@ -14,7 +14,7 @@ It will ask for following details:
 	4. Convert PCAP to CSV required 
 		[PCAPs should be placed at $HOME/Datasets_PCAPs/<Name of dataset>/Date/<PCAPs>]
 		[CSVs should be placed at $HOME/Datasets_CSVs/<Name of dataset>/Day#_Merged.csv]
-	5. What do you want to process?
+	5. What do you want to process>
 		a. APs and Clients
 		b. Filter Traffic
 		c. Frame Details
@@ -22,13 +22,7 @@ It will ask for following details:
 		e. Useless Probe Traffic
 		f. Quantify Causes
 
-Output Path of processed result: $HOME/DataAnalysis/<Name of dataset>/Day#, One folder for each of the above will be created:
-		a. APs-Clients  
-		b. FindNumberofFrames  
-		c. FindAllTrafficDetails  
-		d. ATU  
-		e. UselessProbeTraffic
-		f. CausalAnalysis-Datasets  
+Output Path       
 
 
 

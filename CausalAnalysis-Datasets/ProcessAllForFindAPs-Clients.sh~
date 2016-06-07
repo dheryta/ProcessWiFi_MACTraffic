@@ -3,7 +3,7 @@
 #2-file that contains all dates to be processed required
 pcap_folder=$1
 date_file=$2
-home_dir=`eval echo ~$USER/`
+
 parent_output_folder=$home_dir"/DataAnalysis-IIITD/"
 merged_pcap_csv="/PCAP_CSV/Merged.csv"
 

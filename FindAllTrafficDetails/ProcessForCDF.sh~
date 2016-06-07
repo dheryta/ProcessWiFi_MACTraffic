@@ -4,7 +4,7 @@
 folder=$1
 denominator=$2
 home_dir=`eval echo ~$USER/`
-codePath=$home_dir"Scripts/CausalAnalysis/FindAllTrafficDetails/"
+codePath=$home_dir"/Scripts/CausalAnalysis/FindAllTrafficDetails/"
 
 ackFile="AckDetails.csv"
 dataFile="DataDetails.csv"

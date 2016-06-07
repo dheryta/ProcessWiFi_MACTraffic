@@ -1,7 +1,7 @@
 #!/bin/sh
 #1-parent folder of pcap required it should end with / , ~/NormalProbeTraffic_WIPS/
 #2-file that contains all dates to be processed required
-#parent_output_folder="/home/dherytaj/DataAnalysis-IIITD/CausalQuantification/"
+#parent_output_folder="~/DataAnalysis-IIITD/CausalQuantification/"
 
 pcap_folder=$1
 date_file=$2
