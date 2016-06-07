@@ -1,0 +1,34 @@
+#!/bin/bash
+
+folder=$1 #Date being processed
+filename=$2
+ssid=$3
+
+clients=$4
+#tshark -E separator=, -T fields -e frame.time_epoch -e frame.number -e prism.did.frmlen -e prism.did.channel -e prism.did.mactime -e prism.did.rate -e wlan.fc.type_subtype -e wlan_mgt.ssid -e wlan.bssid -e wlan_mgt.ds.current_channel -e wlan_mgt.qbss.scount -e wlan.fc.retry -e wlan.fc.pwrmgt -e wlan.fc.moredata -e wlan.fc.frag -e wlan.duration -e wlan.ra -e wlan.ta -e wlan.sa -e wlan.da -e wlan.seq -e wlan.qos.priority -e wlan.qos.amsdupresent -e wlan.fc.type -e wlan_mgt.fixed.reason_code -e wlan.fc.ds -r $file 
+#Time, subtype, ssid, bssid, channel, station_count, ra, ta, sa, da, type
+ #1,    7,         8,     9,      10,            11, 17, 18, 19, 20, 24
+cat $filename | grep '0x04\|0x05' | cut -d, -f1,7,8,9,10,11,17,18,19,20,24 --output-delimiter=$',' > /tmp/frames.csv
+totalMAC=`cat $clients|wc -l`
+i=1
+
+
+if [ ! -d $folder ]; then
+mkdir $folder
+fi
+
+gcc ParsePCAPForSimilarityIndex.c -o ParsePCAPForSimilarityIndex.o
+
+
+while [ $i -le $totalMAC ]; do
+
+mac=`head -n $i $clients|tail -1`
+echo $mac
+cat /tmp/frames.csv | grep $mac > /tmp/mac_frames.csv
+./ParsePCAPForSimilarityIndex.o /tmp/mac_frames.csv $mac $ssid > $folder/$mac.csv
+lines=`cat $folder/$mac.csv | wc -l`
+if [ $lines -eq 0 ]; then
+	rm $folder/$mac.csv
+fi
+i=`expr $i + 1`
+done

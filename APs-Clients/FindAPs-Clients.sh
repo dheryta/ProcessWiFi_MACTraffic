@@ -1,0 +1,40 @@
+#!/bin/sh
+#This script aims to find MACs of APs and clients in a given pcap
+
+#To find an AP: Filter PCAP_CSV for beacons, get their BSSIDs, take unique of these BSSIDs
+#Frame number of frame type in PCAP_CSV=7, BSSID=9
+
+#The input should me merged PCAP_CSV file  for 1 day and output will the number of APs and clients in that day
+#Input: Merged PCAP_CSV for the day
+#Input: OutputFolder
+
+file=$1
+output_folder=$2
+
+if [ ! -d $output_folder ]; then
+echo "...Creating directory $output_folder"
+mkdir $output_folder
+fi
+
+echo "...Finding APs"
+`awk -F"," 'BEGIN{OFS=",";} { if ($7 == "0x08" || $7=="0x01" || $7=="0x03" || $7=="0x05") print $9,$8}' $file|sort -u -t, -k1,1 > $output_folder/APs.txt`
+
+echo "...Finding SSIDs"
+`awk -F"," 'BEGIN{OFS=",";} { if ($7 == "0x08") print $8}' $file|sort -u -t, -k1,1|tr '\n' ',' > $output_folder/SSIDs.txt`
+
+
+
+#To find clients, filter PCAP for all SA/TA such that the SA or TA is not in APs.txt
+echo "...Finding Clients"
+echo ".....TAs"
+`cat $file | awk -F"," 'BEGIN{OFS=",";} {print $18}'|sort -u > /tmp/TA.txt`
+echo ".....SAs"
+`cat $file | awk -F"," 'BEGIN{OFS=",";} {print $19}'|sort -u > /tmp/SA.txt`
+echo ".....Finalizing Clients"
+`cat  /tmp/TA.txt /tmp/SA.txt | grep -vw "EMPTY\|ff:ff:ff:ff:ff:ff"  | sort -u > /tmp/Addresses.txt`
+
+`comm -23  /tmp/Addresses.txt $output_folder/APs.txt | grep -v c4:0a:cb > $output_folder/Clients.txt`
+
+
+
+

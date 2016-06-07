@@ -1,0 +1,43 @@
+#!/bin/bash
+#$1-Main Folder ex ../NormalProbeTraffic-TPLink-Enterprise $2-Date Folder
+
+pcapFolder=$1 #CSV Date Folder
+outputFolder=$2
+
+i=1
+
+
+if [ ! -d $outputFolder ]; then
+	mkdir $outputFolder
+fi
+
+csvFiles="*.csv"
+nextSlotdt=0
+nextSlotpt=0
+ptFile="-PT"
+dtFile="-DT"
+for csv in `ls -v $pcapFolder$csvFiles`; do
+    echo "Processing $csv"
+
+    ./AirtimeUtilization-python.sh $csv $nextSlotpt $nextSlotdt $outputFolder/$i$ptFile.csv $outputFolder/$i$dtFile.csv  
+     nextSlotpt=`tail -1 $outputFolder/$i$ptFile.csv | awk -F, '{print $1}'`
+     nextSlotdt=`tail -1 $outputFolder/$i$dtFile.csv | awk -F, '{print $1}'`
+     
+    
+     i=`expr $i + 1`
+done
+
+j=1
+files=`expr $i - 1`
+
+while [ $j -le $files ]; do
+  `cat $outputFolder/$j$ptFile.csv >> $outputFolder/Merged-PT.csv`
+  `cat $outputFolder/$j$dtFile.csv >> $outputFolder/Merged-DT.csv`
+j=`expr $j + 1`	
+done
+
+#./PlotATU.sh $outputFolder/Merged.csv $outputFolder/Merged.png
+./PlotATU_DataFrames.sh $outputFolder/Merged-DT.csv $outputFolder/ATU_DataFrames.png
+./PlotATU_ProbeFrames.sh $outputFolder/Merged-PT.csv $outputFolder/ATU_ProbeFrames.png
+
+

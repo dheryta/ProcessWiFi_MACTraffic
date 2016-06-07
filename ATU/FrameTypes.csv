@@ -1,0 +1,48 @@
+Association request,0x00,0,0
+Association response,0x01,1,0
+Reassociation request,0x02,2,0
+Reassociation response,0x03,3,0
+Probe request,0x04,4,0
+Probe response,0x05,5,0
+Unknown Frame,0x06,6,0
+Unknown Frame,0x07,7,0
+Beacon,0x08,8,0
+Announcement traffic indication map (ATIM),0x09,9,0
+Disassociate,0x0a,10,0
+Authentication,0x0b,11,0
+Deauthentication,0x0c,12,0
+Action frames,0x0d,13,0
+Unknown Frame,0x0e,14,0
+Unknown Frame,0x0f,15,0
+Unknown Frame,0x10,16,1
+Unknown Frame,0x11,17,1
+Unknown Frame,0x12,18,1
+Unknown Frame,0x13,19,1
+Unknown Frame,0x14,20,1
+Unknown Frame,0x15,21,1
+Unknown Frame,0x16,22,1
+Unknown Frame,0x17,23,1
+Block ACK Request,0x18,24,1
+Block ACK,0x19,25,1
+Power-Save Poll,0x1a,26,1
+Request to Send,0x1b,27,1
+Clear to Send,0x1c,28,1
+ACK,0x1d,29,1
+Contention Free Period End,0x1e,30,1
+Contention Free Period End ACK ,0x1f,31,1
+Data,0x20,32,2
+Data + Contention Free ACK,0x21,33,2
+Data + Contention Free Poll,0x22,34,2
+Data + Contention Free ACK + Contention Free Poll ,0x23,35,2
+NULL Data,0x24,36,2
+NULL Data + Contention Free ACK ,0x25,37,2
+NULL Data + Contention Free Poll ,0x26,38,2
+NULL Data + Contention Free ACK + Contention Free ,0x27,39,2
+QoS Data,0x28,40,2
+QoS Data + Contention Free ACK,0x29,41,2
+QoS Data + Contention Free Poll ,0x2a,42,2
+QoS Data + Contention Free ACK + Contention Free,0x2b,43,2
+NULL QoS Data,0x2c,44,2
+Unknown Frame,0x2d,45,2
+NULL QoS Data + Contention Free Poll,0x2e,46,2
+NULL QoS Data + Contention Free ACK + Contention Free Poll,0x2f,47,2

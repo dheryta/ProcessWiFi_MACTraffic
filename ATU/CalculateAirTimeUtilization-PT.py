@@ -1,0 +1,110 @@
+#!/usr/bin/python
+import sys
+from numpy import loadtxt
+
+
+
+filename=sys.argv[1]
+nextSlot=float(sys.argv[2])
+edcaEnabled=int(sys.argv[3])
+denominator=int(sys.argv[4])
+slot=int(sys.argv[5])
+
+#1-time,3-len,6-datarate,19-QoS Priority,7-type_subtype,21-type
+
+#IFS=SIFS/DIFS/AIFS[VO]/AIFS[VI]/AIFS[BK]/AIFS[BE]
+
+#FrameTime = IFS + Preamble + PLCP Header
+
+frames = open( filename, "r" )  # the "r" is not really needed - default 
+framesTable = []
+
+for line in frames:
+   row = line.rstrip().split(',')  
+   framesTable.append(row)
+
+lines= len(framesTable)
+columns= len(framesTable[0])
+
+current=0
+#Our pcaps have short preamble allowed
+ofdmPreamble=16 #us
+ofdmPLCPHeader=4 #us
+ofdmSIFSTime=10 #us
+ofdmSlotTime=9 #us
+ofdmDIFSTime=34 #2*SlotTime(9us) + SIFSTime
+ofdmAIFSTime=0 #AIFSN[AC]*aSlotTime + aSIFSTime
+bkAIFS=73
+beAIFS=37
+viAIFS=28
+voAIFS=28
+#slot=5
+time=nextSlot
+
+frameTime=0
+probeFrames=0
+
+while (current < lines):
+
+	currentFrameTime=framesTable[current][0]
+	prevFrameTime=currentFrameTime
+	currentFrameLen=framesTable[current][1]	
+	currentFrameRate=framesTable[current][2]
+	currentFrameSubType=framesTable[current][3]	
+	currentFrameRA=framesTable[current][4]
+	currentFrameTA=framesTable[current][5]	
+	currentFrameSA=framesTable[current][6]	
+	currentFrameDA=framesTable[current][7]	
+	currentFramePriority=framesTable[current][8]	
+	currentFrameType=framesTable[current][9]	
+
+
+	#print "Main While",current,currentFrameTime,prevFrameTime,currentFrameSubType
+	#readchar.readchar()
+	while ( float(currentFrameTime) - float(prevFrameTime) <= slot and current < lines):		
+		#Consider the case of RTS, CTS and Data
+		#print current,currentFrameTime,prevFrameTime
+		if ( (currentFrameSubType == '0x04' or currentFrameSubType == '0x05') and float(currentFrameTime) - float(prevFrameTime) <= slot and current < lines):
+
+			probeFrames = probeFrames + 1
+			if (int(currentFrameRate) != 0):
+				if (int(currentFrameRate) > 1):
+					rate=1000000*float(currentFrameRate)/denominator
+					frameTime=frameTime+(int(currentFrameLen)*8)/rate
+				else:
+					frameTime=frameTime+(int(currentFrameLen)*8)
+			
+		
+		current=current+1
+		if (current < lines):
+			currentFrameTime=framesTable[current][0]
+			currentFrameLen=framesTable[current][1]	
+			currentFrameRate=framesTable[current][2]
+			currentFrameSubType=framesTable[current][3]	
+			currentFrameRA=framesTable[current][4]
+			currentFrameTA=framesTable[current][5]	
+			currentFrameSA=framesTable[current][6]	
+			currentFrameDA=framesTable[current][7]	
+			currentFramePriority=framesTable[current][8]	
+			currentFrameType=framesTable[current][9]
+
+	time=time+slot
+	if (edcaEnabled == 1):
+		IFS=voAIFS*probeFrames
+	else:
+		IFS=ofdmDIFSTime*probeFrames
+
+	totalPreambleTime=probeFrames*ofdmPreamble
+	totalPLCPHeaderTime=probeFrames*ofdmPLCPHeader
+	frameTime=frameTime+IFS+totalPreambleTime+totalPLCPHeaderTime
+
+	ftPercent=100*(float(frameTime)/1000000)
+
+	print time,",",probeFrames,",",frameTime,",",ftPercent
+	frameTime=0
+	ftPercent=0
+	prevFrameTime=currentFrameTime
+
+	probeFrames=0
+
+

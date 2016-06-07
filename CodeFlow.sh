@@ -1,0 +1,222 @@
+#!/bin/sh
+#Parent Folder of Scripts
+scripts_path="/home/dherytaj/Scripts/CausalAnalysis/"
+logFile="log.txt"
+pcap_parent="/home/dherytaj/Datasets_PCAPs/"
+csv_parent="/home/dherytaj/Datasets_CSVs/"
+
+separator="/"
+underscore="_"
+
+#specific scripts sub folder
+aps_clients="APs-Clients/"
+number_of_frames="FindNumberofFrames/"
+frame_details="FindAllTrafficDetails/"
+airtime_utilization="ATU/"
+useless_pt="UselessProbeTraffic/"
+causal_analysis="CausalAnalysis-Datasets/"
+
+convert_pcap_csv="ConvertPCAPtoCSV/"
+
+###########################################################
+######Initial Choices######################################
+###########################################################
+
+echo -n "Name of dataset to be processed....."
+read dataset
+
+echo -n "EDCA Enabled(1) or Disabled(0)?..Enter 1 or 0..."
+read edcaEnabled
+
+echo -n "Header - Radiotap(1) or Prism(2)..Enter 1 or 2....."
+read denominator
+
+echo  "What do you want to process?..Enter Y or N..."
+echo
+	echo -n ".....Convert PCAP to CSV required?....."
+	read convert
+	echo -n ".....APs and Clients?....."
+	read findAPsClients
+	echo -n ".....Filter Traffic?....."
+        read filterTraffic
+	echo -n ".....Frame Details?....."
+	read frameDetails
+	echo -n ".....Airtime Utilization?....."
+	read atu
+	if echo "$atu" | grep y
+	then
+	    echo -n "..........Enter Slot Size (seconds) for Calculating Airtime Utilization....."
+            read slotSize
+	fi
+	echo -n ".....Useless Probe Traffic?....."
+	read upt
+	#if echo "$upt" | grep y
+	#then
+
+	#fi
+	echo -n ".....Quantify Causes?....."
+	read quantifyCauses
+
+######################################################
+#####################End##############################
+######################################################
+
+echo "Scripts Path...." $scripts_path
+#PCAP Folder Structure: /home/dherytaj/Datasets_PCAPs/Name_of_dataset/DayNo/<PCAP_Files>
+pcap_path=$pcap_parent$dataset
+#CSV Folder Structure: ~/Datasets_CSVs/Name_of_dataset/DayNo_Merged.csv
+csv_path=$csv_parent$dataset
+
+#Convert PCAPs to CSVs, Merge CSVs to Merged.csv
+mkdir -p $csv_path
+
+if echo "$convert" | grep y 
+then
+   i=1
+   echo "PCAP PATH:" $pcap_path
+   for date in `ls -v $pcap_path/`; do
+      echo "Processing Date:" $date
+      process_folder=$pcap_path$separator$date$separator
+      #Convert PCAP to CSV will create two folders PCAP_CSV and Merged in Date Folder, we need to move Merged/Merged.csv to CSV Folder Structure given below
+      execute_path=$scripts_path$convert_pcap_csv
+      script_name="/ConvertPCAPtoCSV.sh"
+      echo "Processing Folder: " $process_folder
+      $execute_path$script_name $process_folder
+      merged="Merged.csv"
+      filename=Day$i$underscore$merged
+      mv $process_folder/Merge/Merge.csv $csv_path$separator$filename
+      i=`expr $i + 1`
+   done
+echo "Conversion Complete"
+fi
+
+#number_of_days=`ls -l| wc -l`
+#number_of_days=`expr $number_of_days - 1` #These many folders will be created
+
+echo "Creating Folder Structure"
+#Output Folder Structure: ~/DataAnalysis/Name_of_dataset/Day#/ScriptName/
+output_parent="/home/dherytaj/DataAnalysis/"
+output_path=$output_parent$dataset$separator
+
+#Create Folder Structure
+if [ ! -d $output_path ]; then
+	mkdir $output_path
+fi
+
+for csv in `ls -v $csv_path`; do #One folder per day of data
+#Format Day#_Merged.csv
+day=`echo $csv|tr '_' ','|awk -F, '{print $1}'`
+echo "Creating folders for:" $csv " and " $day
+
+datanalysis_path=$output_path$separator$day$separator
+echo "Data Analysis Path:" $datanalysis_path
+#For every script create one folder
+    if [ ! -d $datanalysis_path ]; then
+	mkdir $datanalysis_path
+    fi
+
+    mkdir -p $datanalysis_path$aps_clients
+    mkdir -p $datanalysis_path$number_of_frames
+    mkdir -p $datanalysis_path$frame_details
+    mkdir -p $datanalysis_path$airtime_utilization
+    mkdir -p $datanalysis_path$useless_pt
+    mkdir -p $datanalysis_path$causal_analysis
+done
+
+echo "Folder Structure Created"
+
+echo "Processing Started"
+#For every Merged.csv of every dataset
+for csv in `ls $csv_path/`; do
+  echo "..Processing dataset: $dataset"
+day=`echo $csv|tr '_' ','|awk -F, '{print $1}'`
+
+if echo "$findAPsClients" | grep y 
+then
+  echo "....Find APs and Clients--Started"
+  out_path=$output_path$day$separator$aps_clients$separator
+  execute_path=$scripts_path$aps_clients
+  script_name="/FindAPs-Clients.sh"
+  $execute_path$script_name $csv_path$separator$csv $out_path
+  echo "....Find APs and Clients--Ended"
+fi
+
+if echo "$filterTraffic" | grep y 
+then
+  echo "....Find number of total, data, management, and control frames--Started"
+  out_path=$output_path$day$separator$number_of_frames$separator
+  execute_path=$scripts_path$number_of_frames
+  script_name="/FilterTraffic.sh "
+  $execute_path$script_name $csv_path$separator$csv $out_path
+  echo "....Find number of total, data, management, and control frames--Ended"
+fi
+
+if echo "$frameDetails" | grep y 
+then
+  echo "....Find CDF size, rate, IFAT of probe requests, probe response, probe traffic, data and ack--Started"
+  out_path=$output_path$day$separator$frame_details$separator
+  execute_path=$scripts_path$frame_details
+  script_name="/ConsolidatedFrameDetails.sh "
+  $execute_path$script_name $csv_path$separator$csv $out_path $denominator
+  echo "....Find CDF size, rate, IFAT of probe requests, probe response, probe traffic, data and ack--Ended"
+fi
+
+if echo "$atu" | grep y 
+then
+  echo "....Find airtime utilization of probe requests, probe responses, and ACKs--Started"
+  out_path=$output_path$day$separator$airtime_utilization$separator
+  execute_path=$scripts_path$airtime_utilization
+  script_name="/ProcessPCAPsForATU.sh "
+  $execute_path$script_name $csv_path$separator$csv $out_path $edcaEnabled $denominator $slotSize
+  echo "....Find airtime utilization of probe requests, probe responses, and ACKs--Ended"
+fi
+
+if echo "$upt" | grep y 
+then
+  echo "....Find useless probe traffic--Started"
+  out_path=$output_path$day$separator$useless_pt$separator
+  execute_path=$scripts_path$useless_pt
+  script_name="/FindUPT.sh"
+	  echo -n "........Do you want to provide path of clients file (1) or enter client MAC addresses (2)?"
+	  read clientChoice
+	  if [ $clientChoice -eq 1 ]; then
+		  echo -n "........Enter the file name----"
+         	  read clientFile
+	  fi
+	  if [ $clientChoice -eq 2 ]; then
+	          enterMore=
+	  	  until [ "$enterMore" = "n" ]; do
+  	          echo -n ".........Client's MAC Address----"
+	          read clientMAC
+	          clientFile="/tmp/Clients.txt"
+	          if [ -f $clientFile ]; then
+		     rm $clientFile
+	          fi
+	          echo $clientMAC >> $clientFile
+	          echo -n "..........Enter More (y/n)?"
+	          read enterMore
+	          done
+           fi
+  	   echo -n "........Enter allowed SSIDs (CSV)----"
+  	   read SSIDs
+    	   ssidFile="/tmp/SSIDs.txt"
+  	   if [ -f $ssidFile ]; then
+	  	   rm $ssidFile
+    	   fi
+    	   echo $SSIDs >> $ssidFile
+  $execute_path$script_name $csv_path$separator$csv $out_path $ssidFile $clientFile
+  echo "....Find useless probe traffic--Ended"
+fi
+
+if echo "$quantifyCauses" | grep y 
+then
+  echo "....Find the quantification of causal model--Started"
+  out_path=$output_path$day$separator$causal_analysis$separator
+  execute_path=$scripts_path$causal_analysis
+  script_name="/Quantify-Causes.sh"
+  $execute_path$script_name $csv_path$separator$csv $out_path $output_path$day$separator$aps_clients/Clients.txt $output_path$day$separator$aps_clients/SSIDs.txt
+  echo "....Find the quantification of causal model--Ended"
+fi
+
+done
+echo "Processing Completed"
