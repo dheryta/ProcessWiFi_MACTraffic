@@ -63,6 +63,5 @@ fi
 i=`expr $i + 1`
 done
 
-echo "Sanitizing $output_folder$output_file"
-`$codePath/RemoveExtras.sh`
+
 

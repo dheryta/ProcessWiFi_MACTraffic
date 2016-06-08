@@ -66,9 +66,11 @@ beacons_details= len(beaconsTable[0])
 
 #ssids_count= len(ssidTable)
 #ssid_details= len(ssidTable[0])
-ssidreader=csv.reader(ssids_file,delimiter=',',quotechar='\n')
+ssidreader=csv.reader(ssids,delimiter=',',quotechar='\n')
 for row in ssidreader:
 	availableSSIDs=availableSSIDs.join(','.join(row))	
+
+print "Available SSIDs" % availableSSIDs
 
 current=-1
 mac_state=0 #0-unassociated 1-associated
@@ -251,7 +253,8 @@ while (current < frames_count-1):
 							
 							if (currentFrameSSID == "EMPTY" and (currentFrameSA == mac and currentFrameSubType == "0x04" )):
 								c0=c0+1
-							elif (currentFrameSSID != "EMPTY" and (currentFrameSA == mac and currentFrameSubType == "0x04" )):
+							elif (currentFrameSSID != "EMPTY" and (currentFrameSA == mac and currentFrameSubType == "0x04" )):				
+								print currentFrameSSID
 								if ( currentFrameSSID in availableSSIDs): 
 									c1=c1+1
 								else:
@@ -335,6 +338,7 @@ while (current < frames_count-1):
 			if (currentFrameSSID == "EMPTY" and (currentFrameSA == mac and currentFrameSubType == "0x04" )):
 				probeRequestCount[waiting_for_probe][0]=probeRequestCount[waiting_for_probe][0]+1
 			elif (currentFrameSSID != "EMPTY" and (currentFrameSA == mac and currentFrameSubType == "0x04" )):
+				print currentFrameSSID
 				if ( currentFrameSSID in availableSSIDs): 
 					probeRequestCount[waiting_for_probe][1]=probeRequestCount[waiting_for_probe][1]+1			
 				else:
@@ -355,6 +359,9 @@ while (current < frames_count-1):
 			while (countUnicast <=3 and temp < frames_count and (currentFrameSA == mac and currentFrameSubType == "0x04" )):
 				if(currentFrameSSID==mac_ssid and currentFrameSubType == "0x04" and currentFrameSA == mac):
 					countUnicast=countUnicast + 1
+					if ( countUnicast >= 3 and currentFrameSSID in availableSSIDs): 
+						waiting_for_probe=1
+						probeRequestCount[waiting_for_probe][1]=countUnicast
 				currentFrameSubType=framesTable[temp][1]
 				currentFrameSSID=framesTable[temp][2]
 				currentFrameSA=framesTable[temp][7]
@@ -395,6 +402,7 @@ while (current < frames_count-1):
 				if (currentFrameSSID == "EMPTY" and (currentFrameSA == mac and currentFrameSubType == "0x04" )):
 					probeRequestCount[waiting_for_probe][0]=probeRequestCount[waiting_for_probe][0]+1
 				elif (currentFrameSSID != "EMPTY" and (currentFrameSA == mac and currentFrameSubType == "0x04" )):
+					print currentFrameSSID
 					if ( currentFrameSSID in availableSSIDs): 
 						probeRequestCount[waiting_for_probe][1]=probeRequestCount[waiting_for_probe][1]+1			
 					else:
@@ -409,6 +417,7 @@ while (current < frames_count-1):
 			if (currentFrameSSID == "EMPTY"):
 				probeRequestCount[waiting_for_probe][0]=probeRequestCount[waiting_for_probe][0]+1
 			else:
+				print currentFrameSSID
 				if ( currentFrameSSID in availableSSIDs): 
 					probeRequestCount[waiting_for_probe][1]=probeRequestCount[waiting_for_probe][1]+1
 				else:
