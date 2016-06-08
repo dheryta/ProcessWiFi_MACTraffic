@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #Parent Folder of Scripts
 home_dir=`eval echo ~$USER`
 scripts_path=$home_dir"/Scripts/CausalAnalysis/"
@@ -127,6 +127,8 @@ done
 
 echo "Folder Structure Created"
 
+askUPT_Everytime=
+askCausal_Everytime=
 echo "Processing Started"
 #For every Merged.csv of every dataset
 for csv in `ls $csv_path/`; do
@@ -179,6 +181,7 @@ then
   out_path=$output_path$day$separator$useless_pt$separator
   execute_path=$scripts_path$useless_pt
   script_name="/FindUPT.sh"
+	if [ -z "$askUPT_Everytime" -o "$askUPT_Everytime" = "y" ]; then
 	  echo -n "........Do you want to provide path of clients file (1) or enter client MAC addresses (2)?"
 	  read clientChoice
 	  if [ $clientChoice -eq 1 ]; then
@@ -206,6 +209,11 @@ then
 	  	   rm $ssidFile
     	   fi
     	   echo $SSIDs >> $ssidFile
+	fi
+	if [ -z "$askUPT_Everytime" ]; then
+	  echo -n "......Do you want to enter clients and ssids next time? (y-yes, n-no)......"
+	  read askUPT_Everytime	
+	fi
   $execute_path$script_name $csv_path$separator$csv $out_path $ssidFile $clientFile
   echo "....Find useless probe traffic--Ended"
 fi
@@ -216,6 +224,8 @@ then
   out_path=$output_path$day$separator$causal_analysis$separator
   execute_path=$scripts_path$causal_analysis
   script_name="/Quantify-Causes.sh"
+
+	if [ -z "$askCausal_Everytime" -o "$askCausal_Everytime" = "y" ]; then
 	  echo -n "........Do you want to provide path of clients file (1) or enter client MAC addresses (2)?"
 	  read clientChoice
 	  if [ $clientChoice -eq 1 ]; then
@@ -243,6 +253,11 @@ then
 	  	   rm $ssidFile
     	   fi
     	   echo $SSIDs >> $ssidFile
+ 	fi
+	if [ -z "$askCausal_Everytime" ]; then
+	  echo -n "......Do you want to enter clients and ssids next time? (y-yes, n-no)......"
+	  read askCausal_Everytime	
+	fi
  
   $execute_path$script_name $csv_path$separator$csv $out_path $clientFile $ssidFile
   echo "....Find the quantification of causal model--Ended"

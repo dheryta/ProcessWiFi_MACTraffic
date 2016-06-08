@@ -1,0 +1,11 @@
+#!/bin/sh
+
+
+echo are you sure?
+read x
+if  [ "$x" = "y" ]
+then
+  echo " do the dangerous stuff"
+fi
+
+
