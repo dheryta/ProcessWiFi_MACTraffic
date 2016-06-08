@@ -246,13 +246,8 @@ then
 	          read enterMore
 	          done
            fi
-  	   echo -n "........Enter allowed SSIDs (CSV)----"
-  	   read SSIDs
-    	   ssidFile="/tmp/SSIDs.txt"
-  	   if [ -f $ssidFile ]; then
-	  	   rm $ssidFile
-    	   fi
-    	   echo $SSIDs >> $ssidFile
+
+  	   ssidFile=$output_path$day$separator$aps_clients/SSIDs.txt
  	fi
 	if [ -z "$askCausal_Everytime" ]; then
 	  echo -n "......Do you want to enter clients and ssids next time? (y-yes, n-no)......"
