@@ -1,4 +1,6 @@
 # CausalAnalysis
+NOTE: README might not include latest processing options.
+
 This code should be placed in home folder<br />
 Folder structure required $HOME/Scripts/CausalAnalysis/<br />
 This code process packet captures (PCAPs) to analyze the cause of active scanning in WiFi networks.<br />
