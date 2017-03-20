@@ -5,6 +5,9 @@ from numpy import loadtxt
 
 filename=sys.argv[1]
 nextSlot=float(sys.argv[2])
+edcaEnabled=int(sys.argv[3])
+denominator=int(sys.argv[4])
+slot=int(sys.argv[5])
 #1-time,3-len,6-datarate,19-QoS Priority,7-type_subtype,21-type
 
 #IFS=SIFS/DIFS/AIFS[VO]/AIFS[VI]/AIFS[BK]/AIFS[BE]
@@ -33,12 +36,12 @@ bkAIFS=73
 beAIFS=37
 viAIFS=28
 voAIFS=28
-slot=0.1
+#slot=5
 time=nextSlot
 
 frameTime=0
 dataFrames=0
-
+lines=lines-2
 while (current < lines):
 
 	currentFrameTime=framesTable[current][0]
@@ -91,7 +94,7 @@ while (current < lines):
 				
 				if (int(currentFrameRate) != 0):
 					if (int(currentFrameRate) > 1):
-						rate=1000000*float(currentFrameRate)/2
+						rate=1000000*float(currentFrameRate)/denominator
 						frameTime=frameTime+(int(currentFrameLen)*8)/rate
 					else:
 						frameTime=frameTime+(int(currentFrameLen)*8)
@@ -139,8 +142,8 @@ while (current < lines):
 				current=current + 1
 				#print "Current Frame",current
 				localFrameCount=localFrameCount+1
-				if (int(currentFrameRate) != 0):
-					if (int(currentFrameRate) > 1):
+				if (float(currentFrameRate) != 0):
+					if (float(currentFrameRate) > 1):
 						rate=1000000*float(currentFrameRate)/2
 						frameTime=frameTime+(int(currentFrameLen)*8)/rate
 					else:

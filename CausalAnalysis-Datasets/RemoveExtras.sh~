@@ -1,6 +1,8 @@
 #!/bin/sh
 fileName=$1
 
+grep -v "Loading Frames" $fileName > /tmp/t.csv
+mv /tmp/t.csv $fileName
 `sed -i 's/\(\[\|\]\)//g' $fileName`
 `sed -i 's/(//g' $fileName`
 `sed -i 's/)//g' $fileName`

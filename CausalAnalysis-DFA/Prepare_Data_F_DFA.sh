@@ -1,0 +1,14 @@
+#!/bin/bash
+filePath=$1
+executePath=$2
+fileName="/CausalAnalysis-DFA.csv"
+outFile="/CausalAnalysis-CMAS.csv"
+resFile="/CausalAnalysis-Counts.csv"
+
+echo "...Extracting signatures from $filePath$fileName to /tmp/signatures.csv"
+`awk -F, '{print $3}' $filePath$fileName | tr -d '"' | tr -d "[:blank:]" > /tmp/signatures.csv`
+
+echo "....Passing signatures to the CMAS-DFA...."
+`python $executePath/dfa.py /tmp/signatures.csv $executePath/causes_machine.json > $filePath$outFile`
+`cat $filePath$outFile | sort| uniq -c | awk -F" " -v OFS=',' '{print $2,$1}' > $filePath$resFile`
+echo "....CMAS-DFA Ended...."

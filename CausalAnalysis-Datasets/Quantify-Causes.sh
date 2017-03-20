@@ -38,7 +38,7 @@ ssid_file=$4
 totalMAC=`cat $3|wc -l`
 i=1
 home_dir=`eval echo ~$USER/`
-codePath=$home_dir"/Scripts/CausalAnalysis/CausalAnalysis-Datasets/"
+codePath=$home_dir"Scripts/CausalAnalysis/CausalAnalysis-Datasets/"
 
 if [ ! -d $output_folder ]; then
 mkdir $output_folder
@@ -52,17 +52,18 @@ SA=`head -n $i $mac_file|tail -1`
 echo "Processing MAC: $SA"
 echo
 echo "Filtering Client Frames"
-count_preq=`cat $pcap_file|grep "$SA"|grep "0x04"|wc -l`
+count_preq=`cat $pcap_file|fgrep "$SA"|grep "0x04"|wc -l`
 if [ $count_preq -gt 0 ]; then
-	`awk -F"," 'BEGIN{OFS=",";} {print $1,$7,$8,$9,$13,$17,$18,$19,$20,$25,$26}' $pcap_file | grep "$SA" > /tmp/fileToProcess.csv`
+	`awk -F"," 'BEGIN{OFS=",";} {print $1,$7,$8,$9,$13,$17,$18,$19,$20,$25,$26}' $pcap_file | fgrep "$SA" > /tmp/fileToProcess.csv`
 	echo "Filtering Beacon Frames"
 	`awk -F"," 'BEGIN{OFS=",";} {if ($7=="0x08") print $8,$9}' $pcap_file > /tmp/beacons.csv`
 
 	python $codePath/Quantify-Causes.py /tmp/fileToProcess.csv /tmp/beacons.csv $SA $ssid_file >> $output_folder$output_file
+
 fi
 i=`expr $i + 1`
 done
 
-echo "Sanitizing $output_folder$output_file"
-`$codePath/RemoveExtras.sh`
+echo "Sanitizing" $output_folder$output_file
+$codePath/RemoveExtras.sh $output_folder$output_file
 

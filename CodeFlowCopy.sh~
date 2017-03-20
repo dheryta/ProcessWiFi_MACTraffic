@@ -5,7 +5,7 @@ scripts_path=$home_dir"/Scripts/CausalAnalysis/"
 logFile="log.txt"
 pcap_parent=$home_dir"/Datasets_PCAPs/"
 csv_parent=$home_dir"/Datasets_CSVs/"
-allDays="allDays/"
+
 
 separator="/"
 underscore="_"
@@ -20,7 +20,7 @@ causal_analysis="CausalAnalysis-Datasets/"
 causal_analysis_dfa="CausalAnalysis-DFA/"
 preq_pres="1PReq_NPRes/"
 convert_pcap_csv="ConvertPCAPtoCSV/"
-association_patterns="AssociationPatterns/"
+
 
 ###########################################################
 ######Initial Choices######################################
@@ -66,14 +66,6 @@ echo
 
 	echo -n ".....Find 1 Probe Request = X Probe Responses?....."
 	read preqNpres
-
-
-	echo -n ".....Association Patterns?....."
-	read ap
-
-        echo -n "........Do you want to calculate Jaccard Index? [Warning: Works only if Association Patterns Executed Before]...."
-	read calculateJaccardIndex
-
 
 ######################################################
 #####################End##############################
@@ -141,94 +133,18 @@ echo "Data Analysis Path:" $datanalysis_path
     mkdir -p $datanalysis_path$causal_analysis
     mkdir -p $datanalysis_path$causal_analysis_dfa
     mkdir -p $datanalysis_path$preq_pres
-    mkdir -p $datanalysis_path$association_patterns
 done
-
-if echo "$ap" | grep y 
-then
-
-  out_path=$output_path$day$separator$association_patterns$separator
-  out_path_allDays=$output_path$separator$allDays$separator$association_patterns$separator
-  if [ ! -d $output_path$separator$allDays ]; then
-	mkdir $output_path$separator$allDays
-  fi
-
-  if [ ! -d $output_path$separator$allDays$separator$association_patterns$separator ]; then
-	mkdir $output_path$separator$allDays$separator$association_patterns$separator
-  else
-	echo -n "....Shall I empty the Old Association Patterns?...."
-	read empty
-	if echo "$empty" | grep y
-	then
-	rm $output_path$separator$allDays$separator$association_patterns$separator/*
-	fi
-  fi
-
-fi
-
-
 
 echo "Folder Structure Created"
 
-
-if echo "$upt" | grep y 
-then
-  echo "....Find useless probe traffic--Started"
-  out_path=$output_path$day$separator$useless_pt$separator
-  execute_path=$scripts_path$useless_pt
-  script_name="/FindUPT.sh"
-	if [ -z "$askUPT_Everytime" -o "$askUPT_Everytime" = "y" ]; then
-	  echo -n "........Do you want to provide path of clients file (1) or enter client MAC addresses (2)?"
-	  read clientChoice
-	  if [ $clientChoice -eq 1 ]; then
-		  echo -n "........Enter the file name----"
-         	  read clientFile
-	  fi
-	  if [ $clientChoice -eq 2 ]; then
-	          enterMore=
-	  	  until [ "$enterMore" = "n" ]; do
-  	          echo -n ".........Client's MAC Address----"
-	          read clientMAC
-	          clientFile="/tmp/Clients.txt"
-	          if [ -f $clientFile ]; then
-		     rm $clientFile
-	          fi
-	          echo $clientMAC >> $clientFile
-	          echo -n "..........Enter More (y/n)?"
-	          read enterMore
-	          done
-           fi
-  	   echo -n "........Enter allowed SSIDs (CSV)----"
-  	   read SSIDs
-    	   ssidFile="/tmp/SSIDs.txt"
-  	   if [ -f $ssidFile ]; then
-	  	   rm $ssidFile
-    	   fi
-    	   echo $SSIDs >> $ssidFile
-	fi
-	if [ -z "$askUPT_Everytime" ]; then
-	  echo -n "......Do you want to enter clients and ssids next time? (y-yes, n-no)......"
-	  read askUPT_Everytime	
-	fi
-  $execute_path$script_name $csv_path$separator$csv $out_path $ssidFile $clientFile
-  echo "....Find useless probe traffic--Ended"
-fi
-
-
-askCausal_Everytime=
 askUPT_Everytime=
-askAP_Everytime=
-askCalculateJaccardIndex=
+askCausal_Everytime=
 echo "Processing Started"
 #For every Merged.csv of every dataset
 for csv in `ls $csv_path/`; do
 
 day=`echo $csv|tr '_' ','|awk -F, '{print $1}'`
   echo "..Processing day: $day"  
-#echo -n "############Continue............(Y/N)"
-#read cont
-#if echo "$cont" | grep y 
-#then
 if echo "$findAPsClients" | grep y 
 then
   echo "....Find APs and Clients--Started"
@@ -386,7 +302,7 @@ then
   out_path=$output_path$day$separator$causal_analysis_dfa$separator
   execute_path=$scripts_path$causal_analysis_dfa
   script_name="/Prepare_Data_F_DFA.sh"
-  $execute_path$script_name $out_path $execute_path
+  $execute_path$script_name $out_path
   echo "....CMAS Process--Ended"
   fi
 fi
@@ -401,71 +317,5 @@ then
   echo "....Find 1 probe request is responded by how many probe responses--Ended"
 fi
 
-
-if echo "$ap" | grep y 
-then
-  echo "....Find association patterns--Started"
-  out_path=$output_path$day$separator$association_patterns$separator
-  out_path_allDays=$output_path$separator$allDays$separator$association_patterns$separator
-
-  execute_path=$scripts_path$association_patterns
-  script_name="/FindAP.sh"
-	if [ -z "$askAP_Everytime" -o "$askAP_Everytime" = "y" ]; then
-	  echo -n "........Do you want to provide path of clients file (1) or enter client MAC addresses (2)?"
-	  read clientChoice
-	  if [ $clientChoice -eq 1 ]; then
-		  echo -n "........Enter the file name----"
-         	  read clientFile
-	  fi
-	  if [ $clientChoice -eq 2 ]; then
-	          enterMore=
-	  	  until [ "$enterMore" = "n" ]; do
-  	          echo -n ".........Client's MAC Address----"
-	          read clientMAC
-	          clientFile="/tmp/Clients.txt"
-	          if [ -f $clientFile ]; then
-		     rm $clientFile
-	          fi
-	          echo $clientMAC >> $clientFile
-	          echo -n "..........Enter More (y/n)?"
-	          read enterMore
-	          done
-           fi
-	fi
-	if [ -z "$askAP_Everytime" ]; then
-	  echo -n "......Do you want to enter clients next time? (y-yes, n-no)......"
-	  read askAP_Everytime	
-	fi
-  $execute_path$script_name $csv_path$separator$csv $out_path $out_path_allDays $clientFile
-  echo "....Find association patterns--Ended"
-fi
-
-#fi
 done
-
-if [ "$calculateJaccardIndex" = "y" ]; then
-flag=0
-	if [ ! -d $output_path$separator$allDays$separator$association_patterns$separator ]; then
-		flag=1
-	else
-	    files=`ls $output_path$separator$allDays$separator$association_patterns$separator|wc -l`
-            if [ -z $files -o $files -eq 0 ]; then
-			flag=1
-	    fi
-	fi	
-if [ $flag -eq 0 ]; then
-echo "....Calculate Jaccard Index--Started"
-  out_path=$output_path$day$separator$association_patterns$separator
-  out_path_allDays=$output_path$separator$allDays$separator$association_patterns$separator
-
-  execute_path=$scripts_path$association_patterns
-  script_name="/CalculateJaccard.sh"
-  $execute_path$script_name $out_path_allDays
-
-echo "....Calculate Jaccard Index--Ended"
-
-else
-echo "....!!!!Jaccard Index cannot be calculated....Association Patterns Not Present"
-fi
-fi
 echo "Processing Completed"

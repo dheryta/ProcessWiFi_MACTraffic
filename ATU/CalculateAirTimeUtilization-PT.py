@@ -72,7 +72,7 @@ while (current < lines):
 					rate=1000000*float(currentFrameRate)/denominator
 					frameTime=frameTime+(int(currentFrameLen)*8)/rate
 				else:
-					frameTime=frameTime+(int(currentFrameLen)*8)
+					frameTime=frameTime+((int(currentFrameLen)*8)/1000000)
 			
 		
 		current=current+1

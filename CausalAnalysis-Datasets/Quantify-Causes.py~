@@ -100,9 +100,9 @@ for row in ssidreader:
 	availableSSIDs=availableSSIDs.join(','.join(row))	
 
 current=-1
-mac_state=0 #0-unassociated 1-associated
-mac_bssid="EMPTY" #"28:c6:8e:db:08:a5" #no bssid
-mac_ssid="EMPTY" #"AP_5"
+mac_state=1 #0-unassociated 1-associated
+mac_bssid="00:11:74:a3:a7:20" #"EMPTY" #"28:c6:8e:db:08:a5" #no bssid
+mac_ssid="education" #"AP_5"
 prev_ssid="EMPTY" #"AP_5"
 prev_bssid="EMPTY" #"28:c6:8e:db:08:a5"
 

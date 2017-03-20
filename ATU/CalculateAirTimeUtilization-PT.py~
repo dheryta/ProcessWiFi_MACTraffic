@@ -5,7 +5,10 @@ from numpy import loadtxt
 
 
 filename=sys.argv[1]
-nextSlot=int(sys.argv[2])
+nextSlot=float(sys.argv[2])
+edcaEnabled=int(sys.argv[3])
+denominator=int(sys.argv[4])
+slot=int(sys.argv[5])
 
 #1-time,3-len,6-datarate,19-QoS Priority,7-type_subtype,21-type
 
@@ -35,7 +38,7 @@ bkAIFS=73
 beAIFS=37
 viAIFS=28
 voAIFS=28
-slot=0.1
+#slot=5
 time=nextSlot
 
 frameTime=0
@@ -66,10 +69,10 @@ while (current < lines):
 			probeFrames = probeFrames + 1
 			if (int(currentFrameRate) != 0):
 				if (int(currentFrameRate) > 1):
-					rate=1000000*float(currentFrameRate)/2
+					rate=1000000*float(currentFrameRate)/denominator
 					frameTime=frameTime+(int(currentFrameLen)*8)/rate
 				else:
-					frameTime=frameTime+(int(currentFrameLen)*8)
+					frameTime=frameTime+(int(currentFrameLen)*8)/1000000
 			
 		
 		current=current+1
@@ -86,7 +89,11 @@ while (current < lines):
 			currentFrameType=framesTable[current][9]
 
 	time=time+slot
-	IFS=voAIFS*probeFrames
+	if (edcaEnabled == 1):
+		IFS=voAIFS*probeFrames
+	else:
+		IFS=ofdmDIFSTime*probeFrames
+
 	totalPreambleTime=probeFrames*ofdmPreamble
 	totalPLCPHeaderTime=probeFrames*ofdmPLCPHeader
 	frameTime=frameTime+IFS+totalPreambleTime+totalPLCPHeaderTime

@@ -5,7 +5,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-#define Max_Frames 1000000
+#define Max_Frames 10000000
 #define SIFS 0.000011
 
 struct PCAP_Data
@@ -111,12 +111,14 @@ int totalFrames=0;
 		{		
 		int nFrame = eFrame + 1;
 		int probeResponse = 0;
+
 		while((nFrame<framesCount)&&
 		     strcmp(PCAP_DATA_VAL[nFrame].wlan_da,PCAP_DATA_VAL[eFrame].wlan_sa) == 0  && 
 		     strcmp(PCAP_DATA_VAL[nFrame].wlan_fc_type_subtype,"0x05") == 0)
 			{
-			probeResponse ++;
-			nFrame ++;
+				
+			probeResponse ++;				
+			nFrame ++;			
 			}
 		if(probeResponse > 0)
 		printf("%d\n",probeResponse);

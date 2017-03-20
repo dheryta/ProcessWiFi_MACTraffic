@@ -8,8 +8,8 @@ set datafile separator ","
 #set key left box samplen 1
 #set title 'Probe Responses vs Data For $5 Category '
 #set xrange [0:1800]
-set yrange [0:5]
-set ytics 0.1
+set yrange [0:100]
+#set ytics 0.1
 set ylabel "Airtime Utilization Percentage"
 set xlabel "Time (seconds)"
 #set key right top Left title 'Legend' box 1

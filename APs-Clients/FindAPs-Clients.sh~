@@ -22,7 +22,7 @@ read ssids
 grep_ssids=`echo $ssids | sed 's#,#|#g' `
 
 echo "...Finding APs"
-`awk -F"," 'BEGIN{OFS=",";} { if ($7 == "0x08" || $7=="0x01" || $7=="0x03" || $7=="0x05") print $9,$8}' $file|sort -u -t, -k1,1| egrep $grep_ssids | grep -E ':[[:alnum:]]+:' > $output_folder/APs.txt`
+`awk -F"," 'BEGIN{OFS=",";} { if ($7 == "0x08" || $7=="0x01" || $7=="0x03" || $7=="0x05") print $9,$8}' $file|sort -u -t, -k1,1| egrep $ssids | grep -E ':[[:alnum:]]+:' > $output_folder/APs.txt`
 
 
 

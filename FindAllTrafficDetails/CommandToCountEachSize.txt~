@@ -1,0 +1,15 @@
+dherytaj@sabre:~/Scripts/CausalAnalysis/FindAllTrafficDetails$ awk '{print $1}' ~/Temp_Merged_CDF/PRes/IITB_CDF/ProbeResponsesSize.csv | sort | uniq -c | sort -nr | awk -v OFS=',' '{print $2','$1}' > ~/Temp_Merged_CDF/PRes/IITB_CDF/CountOfEachSize.csv
+dherytaj@sabre:~/Scripts/CausalAnalysis/FindAllTrafficDetails$ awk '{print $1}' ~/Temp_Merged_CDF/PRes/IIITD_CDF/ProbeResponseSize.csv | sort | uniq -c | sort -nr | awk -v OFS=',' '{print $2','$1}' > ~/Temp_Merged_CDF/PRes/IIITD_CDF/CountOfEachSize.csv
+dherytaj@sabre:~/Scripts/CausalAnalysis/FindAllTrafficDetails$ awk '{print $1}' ~/Temp_Merged_CDF/PRes/Sigcomm_CDF/ProbeResponseSize.csv | sort | uniq -c | sort -nr | awk -v OFS=',' '{print $2','$1}' > ~/Temp_Merged_CDF/PRes/Sigcomm_CDF/CountOfEachSize.csv
+
+To Calculate Percentage
+awk -F"," -v OFS=',' 'FNR==NR{s+=$2;next;} {printf "%s,%s,%s\n",$1,$2,100*$2/s}' ~/Temp_Merged_CDF/PRes/Sigcomm_CDF/CountOfEachSize.csv ~/Temp_Merged_CDF/PRes/Sigcomm_CDF/CountOfEachSize.csv
+awk -F"," -v OFS=',' 'FNR==NR{s+=$2;next;} {printf "%s,%s,%s\n",$1,$2,100*$2/s}' ~/Temp_Merged_CDF/PRes/IIITD_CDF/CountOfEachSize.csv ~/Temp_Merged_CDF/PRes/IIITD_CDF/CountOfEachSize.csv > ~/Temp_Merged_CDF/PRes/IIITD_CDF/PercentageOfEachCount.csv
+
+
+IITB_1PreqNPres_Merged.csv
+Sigcomm_1PreqNPres_Merged.csv
+
+awk '{print $1}' ~/Temp_Merged_CDF/1PreqNPres/Sigcomm_1PreqNPres_Merged.csv | sort | uniq -c | sort -nr | awk -v OFS=',' '{print $2','$1}' > ~/Temp_Merged_CDF/1PreqNPres/CountOfEachSize.csv
+awk -F"," -v OFS=',' 'FNR==NR{s+=$2;next;} {printf "%s,%s,%s\n",$1,$2,100*$2/s}' ~/Temp_Merged_CDF/1PreqNPres/CountOfEachSize.csv ~/Temp_Merged_CDF/1PreqNPres/CountOfEachSize.csv > ~/Temp_Merged_CDF/1PreqNPres/Sigcomm_1PreqNPres_P.csv
+

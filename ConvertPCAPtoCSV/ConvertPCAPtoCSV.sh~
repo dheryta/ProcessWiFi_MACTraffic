@@ -37,12 +37,12 @@ isPrism=-1
 
 		if [[ $isPrism -eq 0 ]] && [[ $isRadioTap -eq 1 ]]; then
 		echo "Processing: $file with RadioTap Header"
-		 `tshark -x -E separator=, -T fields -e frame.time_epoch -e frame.number -e frame.len -e radiotap.channel.freq -e radiotap.mactime -e radiotap.datarate -e wlan.fc.type_subtype -e wlan_mgt.ssid -e wlan.bssid -e wlan_mgt.ds.current_channel -e wlan_mgt.qbss.scount -e wlan.fc.retry -e wlan.fc.pwrmgt -e wlan.fc.moredata -e wlan.fc.frag -e wlan.duration -e wlan.ra -e wlan.ta -e wlan.sa -e wlan.da -e wlan.seq -e wlan.qos.priority -e wlan.qos.amsdupresent -e wlan.fc.type -e wlan_mgt.fixed.reason_code -e wlan.fc.ds -r $file > $csv_foldername/$i.csv`
+		# `tshark -E separator=, -T fields -e frame.time_epoch -e frame.number -e frame.len -e radiotap.channel.freq -e radiotap.mactime -e radiotap.datarate -e wlan.fc.type_subtype -e wlan_mgt.ssid -e wlan.bssid -e wlan_mgt.ds.current_channel -e wlan_mgt.qbss.scount -e wlan.fc.retry -e wlan.fc.pwrmgt -e wlan.fc.moredata -e wlan.fc.frag -e wlan.duration -e wlan.ra -e wlan.ta -e wlan.sa -e wlan.da -e wlan.seq -e wlan.qos.priority -e wlan.qos.amsdupresent -e wlan.fc.type -e wlan_mgt.fixed.reason_code -e wlan.fc.ds -r $file > $csv_foldername/$i.csv`
 		`tshark -E separator=, -T fields -e frame.time_epoch -e frame.number -e frame.len -e radiotap.channel.freq -e radiotap.mactime -e radiotap.datarate -e wlan.fc.type_subtype -e wlan_mgt.ssid -e wlan.bssid -e wlan_mgt.ds.current_channel -e wlan_mgt.qbss.scount -e wlan.fc.retry -e wlan.fc.pwrmgt -e wlan.fc.moredata -e wlan.fc.frag -e wlan.duration -e wlan.ra -e wlan.ta -e wlan.sa -e wlan.da -e wlan.seq -e wlan.qos.priority -e wlan.qos.amsdupresent -e wlan.fc.type -e wlan_mgt.fixed.reason_code -e wlan_mgt.fixed.status_code -e wlan.fc.ds -e radiotap.dbm_antsignal -r $file > $csv_foldername/$i.csv`
 		elif [[ $isPrism -eq 1 ]] && [[ $isRadioTap -eq 0 ]]; then
 			echo "Processing: $file with Prism Header"
 		 #`tshark -E separator=, -T fields -e frame.time_epoch -e frame.number -e prism.did.frmlen -e prism.did.channel -e prism.did.mactime -e prism.did.rate -e wlan.fc.type_subtype -e wlan_mgt.ssid -e wlan.bssid -e wlan_mgt.ds.current_channel -e wlan_mgt.qbss.scount -e wlan.fc.retry -e wlan.fc.pwrmgt -e wlan.fc.moredata -e wlan.fc.frag -e wlan.duration -e wlan.ra -e wlan.ta -e wlan.sa -e wlan.da -e wlan.seq -e wlan.qos.priority -e wlan.qos.amsdupresent -e wlan.fc.type -e wlan_mgt.fixed.reason_code -e wlan.fc.ds -r $file > $csv_foldername/$i.csv`
-		`tshark -x -E separator=, -T fields -e frame.time_epoch -e frame.number -e prism.did.frmlen -e prism.did.channel -e prism.did.mactime -e prism.did.rate -e wlan.fc.type_subtype -e wlan_mgt.ssid -e wlan.bssid -e wlan_mgt.ds.current_channel -e wlan_mgt.qbss.scount -e wlan.fc.retry -e wlan.fc.pwrmgt -e wlan.fc.moredata -e wlan.fc.frag -e wlan.duration -e wlan.ra -e wlan.ta -e wlan.sa -e wlan.da -e wlan.seq -e wlan.qos.priority -e wlan.qos.amsdupresent -e wlan.fc.type -e wlan_mgt.fixed.reason_code -e wlan_mgt.fixed.status_code -e wlan.fc.ds -e prism.did.signal -r $file > $csv_foldername/$i.csv`
+		`tshark -E separator=, -T fields -e frame.time_epoch -e frame.number -e prism.did.frmlen -e prism.did.channel -e prism.did.mactime -e prism.did.rate -e wlan.fc.type_subtype -e wlan_mgt.ssid -e wlan.bssid -e wlan_mgt.ds.current_channel -e wlan_mgt.qbss.scount -e wlan.fc.retry -e wlan.fc.pwrmgt -e wlan.fc.moredata -e wlan.fc.frag -e wlan.duration -e wlan.ra -e wlan.ta -e wlan.sa -e wlan.da -e wlan.seq -e wlan.qos.priority -e wlan.qos.amsdupresent -e wlan.fc.type -e wlan_mgt.fixed.reason_code -e wlan_mgt.fixed.status_code -e wlan.fc.ds -e prism.did.signal -r $file > $csv_foldername/$i.csv`
 #frame.time_epoch -e wlan.fc.type_subtype -e wlan_mgt.ssid -e wlan.bssid -e wlan_mgt.ds.current_channel -e wlan_mgt.qbss.scount -e wlan.fc.retry -e wlan.ra -e wlan.ta -e wlan.sa -e wlan.da -e  wlan.fc.type
 
 		else
@@ -60,7 +60,7 @@ isPrism=-1
 	i=`expr $i + 1`
 	done
 echo "Merging " $csv_foldername " to " $merged_foldername
-`cat $( ls -v $csv_foldername/*) > $csv_foldername/Merged.csv`
+`cat $csv_foldername/* > $csv_foldername/Merged.csv`
 `mv $csv_foldername/Merged.csv $merged_foldername/Merge.csv`
 #cd ..
 #done

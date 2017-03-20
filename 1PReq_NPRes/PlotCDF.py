@@ -12,7 +12,7 @@ yvals=np.arange(len(sorted_data))/float(len(sorted_data))
 
 s = np.vstack((sorted_data,yvals)).T
 np.savetxt('CDF.csv', s, delimiter=",",fmt='%.6f')
-f=plt.plot(sorted_data,yvals)
+#f=plt.plot(sorted_data,yvals)
 #plt.xscale('log');
 #plt.show()
-plt.savefig('CDF.png')
+#plt.savefig('CDFIFAT.png')

@@ -38,7 +38,7 @@ ssid_file=$4
 totalMAC=`cat $3|wc -l`
 i=1
 home_dir=`eval echo ~$USER/`
-codePath=$home_dir"/Scripts/CausalAnalysis/CausalAnalysis-Datasets/"
+codePath=$home_dir"Scripts/CausalAnalysis/CausalAnalysis-Datasets/"
 
 if [ ! -d $output_folder ]; then
 mkdir $output_folder
@@ -59,9 +59,11 @@ if [ $count_preq -gt 0 ]; then
 	`awk -F"," 'BEGIN{OFS=",";} {if ($7=="0x08") print $8,$9}' $pcap_file > /tmp/beacons.csv`
 
 	python $codePath/Quantify-Causes.py /tmp/fileToProcess.csv /tmp/beacons.csv $SA $ssid_file >> $output_folder$output_file
+
 fi
 i=`expr $i + 1`
 done
 
-
+echo "Sanitizing" $output_folder$output_file
+$codePath/RemoveExtras.sh $output_folder$output_file
 
